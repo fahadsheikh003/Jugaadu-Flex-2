@@ -1,8 +1,8 @@
 const form = document.getElementById("control-row");
-
 form.addEventListener("submit", handleFormSubmit);
 
 async function handleFormSubmit(event) {
+  event.preventDefault();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   let url;
   if (tab?.url) {
@@ -69,6 +69,7 @@ async function doneStuff() {
       const obtMarks = row.querySelector('.totalColObtMarks');
       if (obtMarks && obtMarks.textContent != "") {
         totalObtained += parseFloat(obtMarks.textContent);
+
       }
     }
     const calculationRows = course.querySelectorAll(`.calculationrow`);
@@ -111,12 +112,14 @@ async function doneStuff() {
   }
 
   const courses = document.querySelectorAll(`div[class*='tab-pane']`); // Get all courses
+
   for (let i = 0; i < courses.length; i++) {
     const courseId = courses[i].id;
     const button = courses[i].querySelector(`button[onclick*="ftn_calculateMarks"]`);
     if (button) {
       const id = parseInt(button.getAttribute('onclick').substring(20, 24));
       const newTr = getTr(id);
+      courses[i].querySelector(`div[id=${courses[i].id}-Grand_Total_Marks]`).querySelector('tbody').innerHTML = '';
       courses[i].querySelector(`div[id=${courses[i].id}-Grand_Total_Marks]`).querySelector('tbody').appendChild(newTr);
       set_marks(courseId, id);
     }
