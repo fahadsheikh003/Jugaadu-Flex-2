@@ -1,7 +1,10 @@
-const form = document.getElementById("control-row");
-form.addEventListener("submit", handleFormSubmit);
+const marksForm = document.getElementById("grand-marks");
+marksForm.addEventListener("submit", handleMarksFormSubmit);
 
-async function handleFormSubmit(event) {
+const feedbackForm = document.getElementById("feedback-form");
+feedbackForm.addEventListener("submit", handleFeedbackFormSubmit);
+
+async function handleMarksFormSubmit(event) {
   event.preventDefault();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   let url;
@@ -15,12 +18,35 @@ async function handleFormSubmit(event) {
     } catch {}
   }
 
-  chrome.scripting.executeScript({ target: { tabId: tab.id }, function: doneStuff });
+  chrome.scripting.executeScript({ target: { tabId: tab.id }, function: marksMainFunction });
 }
 
-async function doneStuff() {
+async function handleFeedbackFormSubmit(event) {
+  event.preventDefault();
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  let url;
+  if (tab?.url) {
+    try {
+      url = new URL(tab.url);
+      if (url.hostname !== "flexstudent.nu.edu.pk") {
+        alert("Please open the FlexStudent website first.");
+        return;
+      }
+    } catch {}
+  }
+
+  const input = document.querySelector('input[name="feedback-radio"]:checked');
+  if (!input) {
+    alert("Please select a feedback option first.");
+    return;
+  }
+
+  chrome.scripting.executeScript({ target: { tabId: tab.id }, function: feedbackMainFunction, args: [input.value] });
+}
+
+async function marksMainFunction() {
   if (!window.location.href.includes("Student/StudentMarks")) {
-    alert("Please change path to Student/StudentMarks");
+    alert("Please Open Marks Page First");
     return;
   }
 
@@ -125,3 +151,41 @@ async function doneStuff() {
     }
   }
 }
+
+async function feedbackMainFunction(input) {
+  if (!window.location.href.includes("Student/FeedBackQuestions")) {
+    alert("Please Open Feedback Page of a Specific Course First");
+    return;
+  }
+
+  function selectSpecificRadio(element, input) {
+    const radioButtonsSpan = element.getElementsByClassName('m-list-timeline__time');
+    for (let i = 0; i < radioButtonsSpan.length; i++) {
+        if (radioButtonsSpan[i].textContent.trim() === input) {
+            const radioButton = radioButtonsSpan[i].querySelector('input[type="radio"]');
+            radioButton.checked = true;
+            break;
+        }
+    }
+  }
+  
+  function selectSpecificFeedback(input) {
+    const questions = document.getElementsByClassName('m-list-timeline__item');
+    Array.from(questions).forEach(question => {
+        selectSpecificRadio(question, input);
+    });
+  }
+  
+  function selectRandomFeedback() {
+    const questions = document.getElementsByClassName('m-list-timeline__item');
+    Array.from(questions).forEach(question => {
+        const radioButtonsSpan = question.getElementsByClassName('m-list-timeline__time');
+        const randomIndex = Math.floor(Math.random() * radioButtonsSpan.length);
+        const radioButton = radioButtonsSpan[randomIndex].querySelector('input[type="radio"]');
+        radioButton.checked = true;
+    });
+  }
+
+  input === "Randomize" ? selectRandomFeedback() : selectSpecificFeedback(input);
+} 
+
