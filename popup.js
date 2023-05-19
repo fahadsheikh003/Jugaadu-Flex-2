@@ -4,6 +4,9 @@ marksForm.addEventListener("submit", handleMarksFormSubmit);
 const feedbackForm = document.getElementById("feedback-form");
 feedbackForm.addEventListener("submit", handleFeedbackFormSubmit);
 
+const gpaCalculatorForm = document.getElementById("gpa-calculator");
+gpaCalculatorForm.addEventListener("submit", handleFeedbackFormSubmit);
+
 async function handleMarksFormSubmit(event) {
   event.preventDefault();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
