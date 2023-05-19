@@ -5,7 +5,7 @@ const feedbackForm = document.getElementById("feedback-form");
 feedbackForm.addEventListener("submit", handleFeedbackFormSubmit);
 
 const gpaCalculatorForm = document.getElementById("gpa-calculator");
-gpaCalculatorForm.addEventListener("submit", handleFeedbackFormSubmit);
+gpaCalculatorForm.addEventListener("submit", handleCalculatorFormSubmit);
 
 async function handleMarksFormSubmit(event) {
   event.preventDefault();
