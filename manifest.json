@@ -1,7 +1,7 @@
 {
   "name": "Jugaadu Flex",
   "manifest_version": 3,
-  "version": "2.1",
+  "version": "2.2",
   "permissions": ["scripting", "tabs"],
   "host_permissions": ["*://flexstudent.nu.edu.pk/*"],
   "action": {
