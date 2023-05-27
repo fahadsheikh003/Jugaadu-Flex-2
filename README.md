@@ -35,5 +35,9 @@ Follow this installation procedure to get started with the extension. The instal
 * Now, just select your estimated grades for each of the courses.
 * And Boom! you will start seeing changes as soon as you start updating your grades.
 
+<p align="center">
+  <img src="https://github.com/fahadsheikh003/Jugaadu-Flex-2.0/assets/87650614/2f3f1407-7284-41d4-8fb3-fb6735b6cb98" />
+</p>
+
 ## Disclaimer
 This code is provided for educational purposes only. The code is not intended to be used for malicious purposes or to gain unauthorized access to any system. The author of this code takes no responsibility for any misuse of the code. Use at your own risk. 
