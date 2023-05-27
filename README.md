@@ -2,8 +2,10 @@
 
 This is a Chrome extension that allows you to view your Grand Total Marks (client side calculation), Select feedback with a single clock in flex student portal easily and calculates SGPA (current semester) and updates CGPA. Contributions and recommendations are welcome.
 
+<center>
 ![image](https://github.com/fahadsheikh003/Jugaadu-Flex-2.0/assets/87650614/ecdef46f-7fd7-43eb-8118-03fc5cf2dde6)
-
+</center>
+  
 ## Installation Procedure
 Follow this installation procedure to get started with the extension. The installation is dependency free and only requires Chrome.
 
