@@ -1,7 +1,8 @@
 {
   "name": "Jugaadu Flex",
+  "description": "A Chrome Extension to make FlexStudent better",
   "manifest_version": 3,
-  "version": "2.2",
+  "version": "2.2.1",
   "permissions": ["scripting", "tabs"],
   "host_permissions": ["*://flexstudent.nu.edu.pk/*"],
   "action": {

@@ -16,6 +16,8 @@ Follow this installation procedure to get started with the extension. The instal
 * Visit Marks page on FlexStudent Portal i.e., ```flexstudent.nu.edu.pk/Student/StudentMarks```.
 * Click on extension icon and Click on ```Fix Grand Total Marks``` button.
 * And Boom! all your marks are back where they should be.
+#### Note
+* Only Total Marks calculated are precise, the rest (average, minimum, and maximum) are just calculated based on statistics available on the page because we don't have data of all students that's why we can't calculate class average, minimum and maximum marks.
 
 ### Feedback
 * Visit Feedback page of a course on FlexStudent Portal i.e., ```flexstudent.nu.edu.pk/Student/FeedBackQuestions```.

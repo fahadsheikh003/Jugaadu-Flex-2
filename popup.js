@@ -90,71 +90,78 @@ async function marksMainFunction() {
     return tr;
   }
 
+  const parseFloatOrZero = (value) => {
+    const parsedValue = parseFloat(value);
+    return isNaN(parsedValue) ? 0 : parsedValue;
+  }
+
+  const checkBestOff = (section, weightage) => {
+    const calculationRows = section.querySelectorAll(`.calculationrow`);
+    let weightsOfAssessments = 0;
+    let count = 0;
+    for (let row of calculationRows) {
+      const weightageOfAssessment = parseFloatOrZero(row.querySelector('.weightage').textContent);
+      weightsOfAssessments += weightageOfAssessment;
+
+      if (weightage < weightsOfAssessments) {
+        return count;
+      }
+      count++;
+    }
+    return count;
+  }
+
+  const reorderCalculationRows = (section, bestOff) => {
+    const sectionArray = Array.from(section.querySelectorAll(`.calculationrow`));
+    sectionArray.sort((a, b) => {
+      const aObtained = parseFloatOrZero(a.querySelector('.ObtMarks').textContent);
+      const bObtained = parseFloatOrZero(b.querySelector('.ObtMarks').textContent);
+      return bObtained - aObtained;
+    });
+    return sectionArray.slice(0, bestOff);
+  }
+
   async function set_marks(courseId, id) {
-    var temp = "totalColumn_" + id;
-    var grandTotal = 0;
-    var totalObtained = 0;
-    var totalAverage = 0;
-    var totalMinimum = 0;
-    var totalMaximum = 0;
-
     const course = document.getElementById(courseId);
-    if (!course) {
-      return;
-    }
-    const totalRows = course.querySelectorAll(`.${temp}`);
-    if (!totalRows) {
-      return;
-    }
-    for (let i = 0; i < totalRows.length; i++) {
-      const row = totalRows[i];
-      const weightage = row.querySelector('.totalColweightage');
-      if (weightage && weightage.textContent != "") {
-        grandTotal += parseFloat(weightage.textContent);
-      }
-      const obtMarks = row.querySelector('.totalColObtMarks');
-      if (obtMarks && obtMarks.textContent != "") {
-        totalObtained += parseFloat(obtMarks.textContent);
+    const sections = course.querySelectorAll(`div[id^="${courseId}"]:not([id$="Grand_Total_Marks"])`);
 
-      }
-    }
-    const calculationRows = course.querySelectorAll(`.calculationrow`);
-    if (!calculationRows) {
-      return;
-    }
-    for (let i = 0; i < calculationRows.length; i++) {
-      const row = calculationRows[i];
-      const averageMarks = row.querySelector('.AverageMarks');
-      const totalMarks = row.querySelector('.GrandTotal');
-      const minMarks = row.querySelector('.MinMarks');
-      const maxMarks = row.querySelector('.MaxMarks');
-      const weightage = row.querySelector('.weightage');
-      if (averageMarks && averageMarks.textContent != "" && totalMarks && totalMarks.textContent != "" && weightage && weightage.textContent != "" && minMarks && minMarks.textContent != "" && maxMarks && maxMarks.textContent != "") {
-        const avg = parseFloat(averageMarks.textContent) * parseFloat(weightage.textContent) / parseFloat(totalMarks.textContent);
-        totalAverage += avg;
+    let globalWeightage = 0;
+    let globalObtained = 0;
+    let globalAverage = 0;
+    let globalMinimum = 0;
+    let globalMaximum = 0;
+    
+    for (let section of sections) {
+      const totalRow = section.querySelector(`.totalColumn_${id}`);
+      const localWeightage = parseFloat(totalRow.querySelector('.totalColweightage').textContent);
+      const localObtained = parseFloat(totalRow.querySelector('.totalColObtMarks').textContent);
 
-        const min = parseFloat(minMarks.textContent) * parseFloat(weightage.textContent) / parseFloat(totalMarks.textContent);
-        totalMinimum += min;
+      globalWeightage += localWeightage;
+      globalObtained += localObtained;
 
-        const max = parseFloat(maxMarks.textContent) * parseFloat(weightage.textContent) / parseFloat(totalMarks.textContent);
-        totalMaximum += max;
+      // Check if there are any best off marks
+      const bestOff = checkBestOff(section, localWeightage);
+      const calculationRows = reorderCalculationRows(section, bestOff);
+
+      for (let row of calculationRows) {
+        const weightage = parseFloatOrZero(row.querySelector('.weightage').textContent);
+        const obtained = parseFloatOrZero(row.querySelector('.ObtMarks').textContent);
+        const total = parseFloatOrZero(row.querySelector('.GrandTotal').textContent);
+        const average = parseFloatOrZero(row.querySelector('.AverageMarks').textContent);
+        const minimum = parseFloatOrZero(row.querySelector('.MinMarks').textContent);
+        const maximum = parseFloatOrZero(row.querySelector('.MaxMarks').textContent);
+
+        globalAverage += average * (weightage / total);
+        globalMinimum += minimum * (weightage / total);
+        globalMaximum += maximum * (weightage / total);
       }
     }
-    if ((!isNaN(grandTotal))) {
-      document.getElementById(`GrandtotalColMarks_${id}`).textContent = grandTotal.toFixed(2);
-    }
-    if ((!isNaN(totalObtained))) {
-      document.getElementById(`GrandtotalObtMarks_${id}`).textContent = totalObtained.toFixed(2);
-    }
-    if ((!isNaN(totalAverage))) {
-      document.getElementById(`GrandtotalClassAvg_${id}`).textContent = totalAverage.toFixed(2);
-    }
-    if ((!isNaN(totalMinimum))) {
-      document.getElementById(`GrandtotalClassMin_${id}`).textContent = totalMinimum.toFixed(2);
-    }
-    if ((!isNaN(totalMaximum))) {
-      document.getElementById(`GrandtotalClassMax_${id}`).textContent = totalMaximum.toFixed(2);
-    }
+
+    document.getElementById(`GrandtotalColMarks_${id}`).textContent = globalWeightage.toFixed(2);
+    document.getElementById(`GrandtotalObtMarks_${id}`).textContent = globalObtained.toFixed(2);
+    document.getElementById(`GrandtotalClassAvg_${id}`).textContent = globalAverage.toFixed(2);
+    document.getElementById(`GrandtotalClassMin_${id}`).textContent = globalMinimum.toFixed(2);
+    document.getElementById(`GrandtotalClassMax_${id}`).textContent = globalMaximum.toFixed(2);
   }
 
   const courses = document.querySelectorAll(`div[class*='tab-pane']`); // Get all courses
@@ -255,11 +262,6 @@ async function calculatorMainFunction() {
     cgpa = parseFloat(secondLastSemester.querySelectorAll("span")[2].innerText.split(':')[1]);
   }
  
-
-  
-
-  
-
   let rows = lastSemester.querySelectorAll('tbody > tr');
 
   for (let row of rows) {
