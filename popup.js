@@ -227,7 +227,7 @@ async function calculatorMainFunction() {
     return `<select>
       <option value="-1">-</option>
       <option value="4" ${currGrade == 'A+' || currGrade == 'A' ? 'selected' : ''}>A/A+</option>
-      <option value="3.67 ${currGrade == 'A-' ? 'selected' : ''}">A-</option>
+      <option value="3.67" ${currGrade == 'A-' ? 'selected' : ''}>A-</option>
       <option value="3.33" ${currGrade == 'B+' ? 'selected' : ''}>B+</option>
       <option value="3" ${currGrade == 'B' ? 'selected' : ''}>B</option>
       <option value="2.67" ${currGrade == 'B-' ? 'selected' : ''}>B-</option>
