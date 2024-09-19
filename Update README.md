@@ -3,7 +3,7 @@
 This is a Chrome extension that allows you to view your Grand Total Marks (client side calculation), Select feedback with a single clock in flex student portal easily and calculates SGPA (current semester) and updates CGPA. Contributions and recommendations are welcome.
 
 <p align="center">
-  <img src="https://github.com/fahadsheikh003/Jugaadu-Flex-2.0/assets/87650614/ecdef46f-7fd7-43eb-8118-03fc5cf2dde6" />
+  <img src="https://github.com/user-attachments/assets/a06b364f-f946-4445-90ee-9aa4f75455fe" />
 </p>
   
 ## Installation Procedure
@@ -35,7 +35,7 @@ Follow this installation procedure to get started with the extension. The instal
 * Now, just select your estimated grades for each of the courses.
 * And Boom! you will start seeing changes as soon as you start updating your grades.
 
-### GPA Calculator
+### Admit Card
 * Select Exam term and click on Get Admit card.
 
 <p align="center">
