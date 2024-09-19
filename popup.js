@@ -7,6 +7,9 @@ feedbackForm.addEventListener("submit", handleFeedbackFormSubmit);
 const gpaCalculatorForm = document.getElementById("gpa-calculator");
 gpaCalculatorForm.addEventListener("submit", handleCalculatorFormSubmit);
 
+const admitCardForm = document.getElementById("admit-card");
+admitCardForm.addEventListener("submit", handleAdmitCardSubmit);
+
 async function handleMarksFormSubmit(event) {
   event.preventDefault();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -216,7 +219,6 @@ async function feedbackMainFunction(input) {
   input === "Randomize" ? selectRandomFeedback() : selectSpecificFeedback(input);
 } 
 
-
 async function calculatorMainFunction() {
   if (!window.location.href.includes("Student/Transcript")) {
     alert("Please Open Transcript Page first");
@@ -308,4 +310,43 @@ async function calculatorMainFunction() {
   });
 
   handleSelectChange();
+}
+
+async function handleAdmitCardSubmit(event) {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  let url;
+  if (tab?.url) {
+    try {
+      url = new URL(tab.url);
+      if (url.hostname !== "flexstudent.nu.edu.pk") {
+        alert("Please open the FlexStudent website first.");
+        return;
+      }
+    } catch {}
+  }
+
+  const input = document.getElementById("admit-card-radio");
+  if (!input) {
+    alert("Please select an option first.");
+    return;
+  }
+
+  chrome.scripting.executeScript({ target: { tabId: tab.id }, function: admitCardMainFunction, args: [input.value] });
+}
+
+async function admitCardMainFunction(inputValue) {
+  if (!(inputValue === "Sessional-I" || inputValue === "Sessional-II" || inputValue === "Final")) {
+    return;
+  }
+  const resp = await fetch(`https://flexstudent.nu.edu.pk/Student/AdmitCardByRollNo?cardtype=${inputValue}&type=pdf`, { 
+    method: 'POST'
+  });
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob); 
+
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = `Admit_Card_${inputValue}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
