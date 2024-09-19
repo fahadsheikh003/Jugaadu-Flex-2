@@ -29,14 +29,14 @@ Follow this installation procedure to get started with the extension. The instal
 * Click on ```Select``` button.
 * And Boom! you will see the magic by yourself. 
 
+### Admit Card
+* Select Exam term and click on Get Admit card.
+
 ### GPA Calculator
 * Visit Transcript page on FlexStudent Portal i.e., ```flexstudent.nu.edu.pk/Student/Transcript```.
 * Click on extension icon and Click on ```Turn on GPA Calculator``` button.
 * Now, just select your estimated grades for each of the courses.
 * And Boom! you will start seeing changes as soon as you start updating your grades.
-
-### Admit Card
-* Select Exam term and click on Get Admit card.
 
 <p align="center">
   <img src="https://github.com/fahadsheikh003/Jugaadu-Flex-2.0/assets/87650614/2f3f1407-7284-41d4-8fb3-fb6735b6cb98" />
