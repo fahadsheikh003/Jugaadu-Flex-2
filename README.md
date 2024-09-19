@@ -35,6 +35,9 @@ Follow this installation procedure to get started with the extension. The instal
 * Now, just select your estimated grades for each of the courses.
 * And Boom! you will start seeing changes as soon as you start updating your grades.
 
+### GPA Calculator
+* Select Exam term and click on Get Admit card.
+
 <p align="center">
   <img src="https://github.com/fahadsheikh003/Jugaadu-Flex-2.0/assets/87650614/2f3f1407-7284-41d4-8fb3-fb6735b6cb98" />
 </p>
