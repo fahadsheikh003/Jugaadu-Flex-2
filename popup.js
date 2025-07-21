@@ -267,19 +267,98 @@ async function calculatorMainFunction() {
   let rows = lastSemester.querySelectorAll('tbody > tr');
 
   for (let row of rows) {
-    row.querySelectorAll('td.text-center')[1].innerHTML = getSelect(row.querySelectorAll('td.text-center')[1].innerText);
+    const gradeCell = row.querySelectorAll('td.text-center')[1];
+    const currentGradeText = gradeCell.innerText.trim();
+    gradeCell.innerHTML = getSelect(currentGradeText);
   }
 
   const getCorrespondingCreditHours = (selectelem) => parseInt(selectelem.parentElement.previousElementSibling.innerText);
 
-  const handleSelectChange = (e) => {
-    let selects = document.getElementsByTagName('select');
+    const handleSelectChange = (e) => {
+    let selects = document.getElementsByTagName("select");
     let totalCreditHours = 0;
     let totalGradePoints = 0;
+
+    // Collect all courses from all semesters
+    const allCourses = [];
+    for (let i = 0; i < semesters.length; i++) {
+      let semesterRows = semesters[i].querySelectorAll("tbody > tr");
+      for (let row of semesterRows) {
+        const courseName = row.querySelector("td:nth-child(2)").innerText.trim();
+        const creditHours = parseInt(row.querySelector("td:nth-child(4)").innerText);
+        const gradeCell = row.querySelector("td:nth-child(5)");
+        let gradeValue = -1;
+
+        // Check if the grade cell contains a select element (for current semester)
+        if (gradeCell.querySelector("select")) {
+          gradeValue = parseFloat(gradeCell.querySelector("select").value);
+        } else {
+          // For previous semesters, parse the existing grade text
+          const gradeText = gradeCell.innerText.trim();
+          switch (gradeText) {
+            case "A+":
+            case "A":
+              gradeValue = 4;
+              break;
+            case "A-":
+              gradeValue = 3.67;
+              break;
+            case "B+":
+              gradeValue = 3.33;
+              break;
+            case "B":
+              gradeValue = 3;
+              break;
+            case "B-":
+              gradeValue = 2.67;
+              break;
+            case "C+":
+              gradeValue = 2.33;
+              break;
+            case "C":
+              gradeValue = 2;
+              break;
+            case "C-":
+              gradeValue = 1.67;
+              break;
+            case "D+":
+              gradeValue = 1.33;
+              break;
+            case "D":
+              gradeValue = 1;
+              break;
+            case "F":
+              gradeValue = 0;
+              break;
+            default:
+              gradeValue = -1; // Handle cases where grade is not a standard letter grade
+          }
+        }
+
+        if (gradeValue !== -1) {
+          allCourses.push({ name: courseName, creditHours: creditHours, gradeValue: gradeValue });
+        }
+      }
+    }
+
+    // Determine the latest grade for each course (overwrite as we go)
+    const courseLatestGrades = {};
+    for (const course of allCourses) {
+      courseLatestGrades[course.name] = course;
+    }
+
+    // Calculate total credit hours and grade points based on latest grades only
+    let finalTotalCreditHours = 0;
+    let finalTotalGradePoints = 0;
+    for (const courseName in courseLatestGrades) {
+      const course = courseLatestGrades[courseName];
+      finalTotalCreditHours += course.creditHours;
+      finalTotalGradePoints += course.creditHours * course.gradeValue;
+    }
+
+    // Update the displayed grades for the current semester
     for (let select of selects) {
       if (select.value != -1) {
-        totalCreditHours += getCorrespondingCreditHours(select);
-        totalGradePoints += parseFloat(getCorrespondingCreditHours(select)) * parseFloat(select.value);
         select.parentElement.nextElementSibling.innerText = select.value;
         select.parentElement.nextElementSibling.style.fontWeight = 'bold';
       } else {
@@ -287,14 +366,23 @@ async function calculatorMainFunction() {
         select.parentElement.nextElementSibling.style.fontWeight = 'normal';
       }
     }
-    if (totalCreditHours == 0) {
+
+    if (finalTotalCreditHours === 0) {
       cgpaelem.innerHTML = `CGPA: ${cgpa.toFixed(2)}`;
       sgpaelem.innerHTML = `SGPA: 0`;
       return;
     }
-    let calculatedSGPA = totalGradePoints / totalCreditHours;
-    let actualCreditHoursEarned = crEarned - getSUcredithours();
-    let calculatedCGPA = (cgpa * actualCreditHoursEarned + calculatedSGPA * totalCreditHours) / (actualCreditHoursEarned + totalCreditHours);
+
+    // Calculate SGPA for current semester only
+    for (let select of selects) {
+      if (select.value != -1) {
+        totalCreditHours += getCorrespondingCreditHours(select);
+        totalGradePoints += parseFloat(getCorrespondingCreditHours(select)) * parseFloat(select.value);
+      }
+    }
+
+    const calculatedSGPA = totalCreditHours > 0 ? totalGradePoints / totalCreditHours : 0;
+    const calculatedCGPA = finalTotalGradePoints / finalTotalCreditHours; // CGPA is based on highest grades across all semesters
 
     cgpaelem.innerHTML = `CGPA: ${calculatedCGPA.toFixed(2)}`;
     sgpaelem.innerHTML = `SGPA: ${calculatedSGPA.toFixed(2)}`;
