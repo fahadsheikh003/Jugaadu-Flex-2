@@ -239,6 +239,8 @@ async function calculatorMainFunction() {
       <option value="1.33" ${currGrade == 'D+' ? 'selected' : ''}>D+</option>
       <option value="1" ${currGrade == 'D' ? 'selected' : ''}>D</option>
       <option value="0" ${currGrade == 'F' ? 'selected' : ''}>F</option>
+      <option value="-2" ${currGrade == 'S' ? 'selected' : ''}>S</option>
+      <option value="-3" ${currGrade == 'U' ? 'selected' : ''}>U</option>
     </select>`;
   }
 
@@ -330,12 +332,18 @@ async function calculatorMainFunction() {
             case "F":
               gradeValue = 0;
               break;
+            case "S":
+              gradeValue = -2;
+              break;
+            case "U":
+              gradeValue = -3;
+              break;
             default:
               gradeValue = -1; // Handle cases where grade is not a standard letter grade
           }
         }
 
-        if (gradeValue !== -1) {
+        if (gradeValue !== -1 && gradeValue !== -2 && gradeValue !== -3) {
           allCourses.push({ name: courseName, creditHours: creditHours, gradeValue: gradeValue });
         }
       }
@@ -358,9 +366,15 @@ async function calculatorMainFunction() {
 
     // Update the displayed grades for the current semester
     for (let select of selects) {
-      if (select.value != -1) {
+      if (select.value != -1 && select.value != -2 && select.value != -3) {
         select.parentElement.nextElementSibling.innerText = select.value;
         select.parentElement.nextElementSibling.style.fontWeight = 'bold';
+      } else if (select.value == -2) {
+        select.parentElement.nextElementSibling.innerText = 'S';
+        select.parentElement.nextElementSibling.style.fontWeight = 'normal';
+      } else if (select.value == -3) {
+        select.parentElement.nextElementSibling.innerText = 'U';
+        select.parentElement.nextElementSibling.style.fontWeight = 'normal';
       } else {
         select.parentElement.nextElementSibling.innerText = '-';
         select.parentElement.nextElementSibling.style.fontWeight = 'normal';
@@ -375,7 +389,7 @@ async function calculatorMainFunction() {
 
     // Calculate SGPA for current semester only
     for (let select of selects) {
-      if (select.value != -1) {
+      if (select.value != -1 && select.value != -2 && select.value != -3) {
         totalCreditHours += getCorrespondingCreditHours(select);
         totalGradePoints += parseFloat(getCorrespondingCreditHours(select)) * parseFloat(select.value);
       }
