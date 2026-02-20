@@ -654,7 +654,7 @@ async function admitCardMainFunction(inputValue) {
 
   let a = document.createElement('a');
   a.href = url;
-  a.download = `Admit_Card_${inputValue}.pdf`;
+  a.download = `${inputValue}_AdmitCard.pdf`;
   a.click();
   URL.revokeObjectURL(url);
 }
