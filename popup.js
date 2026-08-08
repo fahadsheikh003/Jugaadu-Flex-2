@@ -573,7 +573,7 @@ async function feeCalculatorMainFunction() {
   }
 
   // const FEE_PER_CREDIT = await getFeePerCreditFromPage(); 
-  const FEE_PER_CREDIT = 11000; // hardcoded for now, will discuss whats right later
+  const FEE_PER_CREDIT = 12000; // hardcoded for now, will discuss whats right later
 
   const semesterHeadings = Array.from(document.querySelectorAll("h4, h5, h3, div, span"))
     .filter(el => el.innerText?.trim().startsWith("Semester No."));
